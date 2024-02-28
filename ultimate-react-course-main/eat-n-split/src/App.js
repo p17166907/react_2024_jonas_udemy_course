@@ -32,12 +32,14 @@ export default function App() {
   // Function to add a new friend to the list
   const addFriend = (newFriendObj) => { setFriends((prevFriendObjects) => [...prevFriendObjects, newFriendObj]); setShowAddFriend(false); };
 
-  const handleSelection = (friendObj) => { setSelectedFriendObj(friendObj); }
-
+  const handleSelection = (friendObj) => {
+    setSelectedFriendObj((currSelected) => currSelected && currSelected.id === friendObj.id ? null : friendObj);
+    setShowAddFriend(false)
+  }
   return (
     <div className="app">
       <div className="sidebar">
-        <FriendList friends={friends} handleSelection={handleSelection} />
+        <FriendList friends={friends} handleSelection={handleSelection} selectedFriendObj={selectedFriendObj} />
         {(showAddFriend) && <FormAddFriend addFriend={addFriend} />}
         <Button onClick={handleShowAddFriend}> {(showAddFriend) ? 'Close' : 'Add Friend'} </Button>
       </div>
@@ -49,13 +51,15 @@ export default function App() {
   );
 }
 
-export function FriendList({ friends, handleSelection }) {
-  return (<ul>  {friends.map((friend) => (<Friend friendObj={friend} key={friend.id} handleSelection={handleSelection} />))}  </ul>);
+export function FriendList({ friends, handleSelection, selectedFriendObj }) {
+  return (<ul>  {friends.map((friend) => (<Friend friendObj={friend} key={friend.id} handleSelection={handleSelection} selectedFriendObj={selectedFriendObj} />))}  </ul>);
 }
 
 
-export function Friend({ friendObj, handleSelection }) {
+export function Friend({ friendObj, handleSelection, selectedFriendObj }) {
   const { name, image, balance } = friendObj;
+
+  const isSelected = selectedFriendObj === friendObj
 
   const renderBalanceStatus = () => {
     if (balance === 0) return <p>Balance is {balance}</p>;
@@ -68,11 +72,11 @@ export function Friend({ friendObj, handleSelection }) {
   };
 
   return (
-    <li>
+    <li className={(isSelected) ? ("selected") : ("")}>
       <img src={image} alt={name} />
       <h3>{name}</h3>
       {renderBalanceStatus()}
-      <Button onClick={() => handleSelection(friendObj)}>Select</Button>
+      <Button onClick={() => handleSelection(friendObj)}>{(isSelected) ? ("Close") : ("Select")}</Button>
     </li>
   );
 }
@@ -108,9 +112,14 @@ export function FormAddFriend({ addFriend }) {
 }
 
 function FormSplitBill({ selectedFriendObj }) {
+  // Utility function to capitalize the first letter of the friend's name
+  const capitalizeFirstLetter = (string) => {
+    if (!string) return '';
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
   return (
     <form className="form-split-bill">
-      <h2>{`Split a bill with ${selectedFriendObj ? selectedFriendObj.name : ''}`}</h2>
+      <h2>{`Split a bill with ${(selectedFriendObj) ? (selectedFriendObj.name) : 'selected friend'}`}</h2>
 
       <label>💰 Bill Value</label>
       <input type="text" />
@@ -118,13 +127,13 @@ function FormSplitBill({ selectedFriendObj }) {
       <label>🫵🏾 Your expense</label>
       <input type="text" />
 
-      <label> {`👯‍♂️ {friend name} expense`}</label>
+      <label> {`👯‍♂️ ${selectedFriendObj ? `${capitalizeFirstLetter(selectedFriendObj.name)}'s` : ''} expense`}</label>
       <input type="text" disabled />
 
       <label>🤑 Who is paying the bill</label>
       <select>
         <option value='user'>You</option>
-        <option value='friend'>{`{friend name}`}</option>
+        <option value='friend'>{`${selectedFriendObj ? capitalizeFirstLetter(selectedFriendObj.name) : 'selected friend'}`}</option>
       </select>
 
       <Button>Split Bill</Button>
