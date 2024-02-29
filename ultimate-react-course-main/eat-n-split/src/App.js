@@ -20,6 +20,10 @@ const initialFriends = [
     balance: 0,
   },
 ];
+
+/**
+ * Generic button component.  @param {{ children: React.ReactNode, onClick: () => void }} props - The button props.
+ */
 export function Button({ children, onClick }) { return (<button className="button" onClick={onClick}>{children}</button>) }
 
 export default function App() {
@@ -27,17 +31,27 @@ export default function App() {
   const [friends, setFriends] = useState(initialFriends); // Using initialFriends
   const [selectedFriendObj, setSelectedFriendObj] = useState(null)
 
+  /**    * Toggles the add friend form display.    */
   const handleShowAddFriend = () => { setShowAddFriend((currentDisplay) => !currentDisplay); };
 
-  // Function to add a new friend to the list
+  /**
+   * Adds a new friend to the list. @param {Object} newFriendObj - The new friend object to add.
+   */
   const addFriend = (newFriendObj) => { setFriends((prevFriendObjects) => [...prevFriendObjects, newFriendObj]); setShowAddFriend(false); };
 
+
+  /**
+  * Selects or deselects a friend for bill splitting. @param {Object} friendObj - The friend object to select or deselect.
+  */
   const handleSelection = (friendObj) => {
     setSelectedFriendObj((currSelected) => currSelected && currSelected.id === friendObj.id ? null : friendObj);
     setShowAddFriend(false)
   }
-
   console.log(friends);
+
+  /**
+  * Handles splitting the bill between the user and selected friend. @param {number} value - The value to adjust the friend's balance by.
+  */
   const handleSplitBill = (value) => {
     console.log(value);
 
@@ -60,16 +74,22 @@ export default function App() {
   );
 }
 
+/**
+ * Displays a list of friends. @param {{ friends: Array, handleSelection: Function, selectedFriendObj: Object }} props - Component props.
+ */
 export function FriendList({ friends, handleSelection, selectedFriendObj }) {
   return (<ul>  {friends.map((friend) => (<Friend friendObj={friend} key={friend.id} handleSelection={handleSelection} selectedFriendObj={selectedFriendObj} />))}  </ul>);
 }
 
-
+/**
+ * Represents a single friend item. @param {{ friendObj: Object, handleSelection: Function, selectedFriendObj: Object }} props - Component props.
+ */
 export function Friend({ friendObj, handleSelection, selectedFriendObj }) {
   const { name, image, balance } = friendObj;
 
   const isSelected = selectedFriendObj === friendObj
 
+  /**   * Renders the friend's balance status.   */
   const renderBalanceStatus = () => {
     if (balance === 0) return <p>Balance is {balance}</p>;
 
@@ -90,10 +110,16 @@ export function Friend({ friendObj, handleSelection, selectedFriendObj }) {
   );
 }
 
+/**
+ * Form for adding a new friend. @param {{ addFriend: Function }} props - Component props.
+ */
 export function FormAddFriend({ addFriend }) {
   const [name, setName] = useState("");
   const [image, setImage] = useState("https://i.pravatar.cc/48");
 
+  /**
+    * Handles form submission to split the bill. @param {Event} e - The form submission event.
+    */
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!name) return;
