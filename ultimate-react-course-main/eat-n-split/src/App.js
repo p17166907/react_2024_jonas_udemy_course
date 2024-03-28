@@ -118,7 +118,8 @@ export function FormAddFriend({ addFriend }) {
   const [image, setImage] = useState("https://i.pravatar.cc/48");
 
   /**
-    * Handles form submission to split the bill. @param {Event} e - The form submission event.
+    * Handles form submission to add a new friend.
+    * @param {Event} e - The form submission event.
     */
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -147,6 +148,10 @@ export function FormAddFriend({ addFriend }) {
   );
 }
 
+
+/**
+ * Form for splitting a bill. @param {{ selectedFriendObj: Object, handleSplitBill: Function }} props - Component props.
+ */
 function FormSplitBill({ selectedFriendObj, handleSplitBill }) {
   const [bill, setBill] = useState('')
   const [paidByUser, setpaidByUser] = useState('')
@@ -156,13 +161,17 @@ function FormSplitBill({ selectedFriendObj, handleSplitBill }) {
   // Utility function to capitalize the first letter of the friend's name
   const capitalizeFirstLetter = (string) => { if (!string) return ''; return string.charAt(0).toUpperCase() + string.slice(1); };
 
+  /**
+  * Handles form submission to split the bill. @param {Event} e - The form submission event.
+  */
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!bill || !paidByUser) return;
     handleSplitBill((whoIsPaying === 'user') ? (paidByFriend) : (- paidByUser))
   }
+
   return (
-    <form className="form-split-bill" on onSubmit={handleSubmit}>
+    <form className="form-split-bill" onSubmit={handleSubmit}>
       <h2>{`Split a bill with ${(selectedFriendObj) ? (selectedFriendObj.name) : 'selected friend'}`}</h2>
 
       <label>💰 Bill Value</label>
