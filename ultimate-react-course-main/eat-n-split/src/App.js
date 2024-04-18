@@ -67,6 +67,7 @@ export default function App() {
         <Button onClick={handleShowAddFriend}> {(showAddFriend) ? 'Close' : 'Add Friend'} </Button>
       </div>
 
+      {/* The key prop helps React identify which items have changed, are added, or are removed */}
       {(selectedFriendObj) && <FormSplitBill selectedFriendObj={selectedFriendObj} handleSplitBill={handleSplitBill} key={selectedFriendObj.id} />}
 
 
