@@ -1,6 +1,54 @@
 import { useEffect, useState } from "react";
 import { StarRating } from './StarRating'
 
+const tempMovieData = [
+	{
+		imdbID: "tt1375666",
+		Title: "Inception",
+		Year: "2010",
+		Poster:
+			"https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
+	},
+	{
+		imdbID: "tt0133093",
+		Title: "The Matrix",
+		Year: "1999",
+		Poster:
+			"https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_SX300.jpg",
+	},
+	{
+		imdbID: "tt6751668",
+		Title: "Parasite",
+		Year: "2019",
+		Poster:
+			"https://m.media-amazon.com/images/M/MV5BYWZjMjk3ZTItODQ2ZC00NTY5LWE0ZDYtZTI3MjcwN2Q5NTVkXkEyXkFqcGdeQXVyODk4OTc3MTY@._V1_SX300.jpg",
+	},
+];
+
+const tempWatchedData = [
+	{
+		imdbID: "tt1375666",
+		Title: "Inception",
+		Year: "2010",
+		Poster:
+			"https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
+		runtime: 148,
+		imdbRating: 8.8,
+		userRating: 10,
+	},
+	{
+		imdbID: "tt0088763",
+		Title: "Back to the Future",
+		Year: "1985",
+		Poster:
+			"https://m.media-amazon.com/images/M/MV5BZmU0M2Y1OGUtZjIxNi00ZjBkLTg1MjgtOWIyNThiZWIwYjRiXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg",
+		runtime: 116,
+		imdbRating: 8.5,
+		userRating: 9,
+	},
+];
+
+
 /**
  * Calculates the average of an array of numbers.
  * @param {number[]} arr - Array of numbers.
@@ -28,14 +76,9 @@ export default function App() {
 	const handleSelectMovie = (id) => setSelectedId((currSelectedId) => (id === currSelectedId ? null : id));
 	console.log('App, handleSelectMovie()', selectedId);
 	const handleCloseMovie = () => setSelectedId(null);
-	const handleAddWatched = (movie) => {
-		setWatched((watched) => [...watched, movie])
-		// localStorage.setItem("watched", JSON.stringify([...watched, movie]))
-	}
+	const handleAddWatched = (movie) => { setWatched((watched) => [...watched, movie]) }
 	const handleDeleteWatched = (id) => { setWatched((watched) => watched.filter((movieElObj) => movieElObj.imdbID !== id)) }
 
-
-	useEffect(() => { localStorage.setItem("watched", JSON.stringify(watched)) }, [watched])
 
 	useEffect(() => {
 		// A controller object that allows you to abort one or more DOM requests as and when desired.
@@ -213,19 +256,6 @@ export function MovieDetails({ selectedId, handleCloseMovie, setIsLoading, isLoa
 
 	const isWatched = watched.map((movie) => movie.imdbID).includes(selectedId);
 	const watchedUserRating = watched.find((movie) => movie.imdbID === selectedId)?.userRating
-
-	// /*eslint-disable*/
-	// if (imdbRating > 8) [isTop, setIsTop] = usestate(true)
-	// if (imdbRating > 8) return <p>Greates Ever!</p>
-
-	// const [isTop, setIsTop] = useState(imdbRating > 8)
-	// console.log('isTop', isTop); //when movie rating is greater than 8 it still prints false
-	// //we utilize useEffect
-	// useEffect(() => { setIsTop(imdbRating > 8) }, [imdbRating])
-	// // when movie rating is greater than 8 it will eventually prints true beacuse of the use effect
-	//better way is to use derived state
-	const isTop = imdbRating > 8
-	console.log('isTop', isTop);
 
 	const handleAdd = () => {
 		const newWatchedMovie = { imdbID: selectedId, title, year, poster, imdbRating: Number(imdbRating), runtime: Number(runtime.split(" ")[0]), userRating }
